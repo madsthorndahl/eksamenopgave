@@ -50,47 +50,35 @@ function validateForm(event) {
     var emailErr = true;
 
 // validere userName
-    if (username ==""){
-        printError("usernameErr", "Type in a username");
-    }
+if (username ==""){
+    printError("usernameErr", "Type in a username");
+}
 //klargøre hvilke tegn username må indeholde --> disse tegn er fundet på stack Overflow
 //https://stackoverflow.com/questions/9628879/javascript-regex-username-validation
-    else {
-        var regex = /^[a-zA-Z\s]+$/;
+else {
+    var regex = /^[a-zA-Z\s]+$/;
 
-    //hvilke situationer der skal printes en errormessage defineres
-        if (regex.test(username) === false){
-            printError("usernameErr", "Please enter a username using the standard alphabet");
-        }
+//hvilke situationer der skal printes en errormessage defineres
+    if (regex.test(username) === false){
+        printError("usernameErr", "Please enter a username using the standard alphabet");
+    }
+    
+    if(regex.test(username) == true){
+    
+            const xhr = new XMLHttpRequest();
+            xhr.responseType = "json"    
         
-        if(regex.test(username) == true){
-        
-                const xhr = new XMLHttpRequest();
-                xhr.responseType = "json"    
-            
-                xhr.addEventListener("readystatechange", function() {
-                    if(this.readyState === 4) {
-                        const respo = this.response 
-                        console.log(respo)
-                        if (respo.err == 'Failed'){
-                            printError("usernameErr", "Please enter a username using the standard alphabet");
-                        }
-                        
-                    }
-            
-                    })
-                // "Åbner" vores http request og angiver at det er POST request fra serveren på localhost:3000
-                console.log('her')
-                xhr.open("post", "http://localhost:2500/ifExisting", true);
-            
-                // definerer at det er en JSON-fil der skal arbejdes med
-                xhr.setRequestHeader("Content-Type", "application/json");
-            
-                // Sender http requested afsted. Den sender altså den data som er indtastet af brugeren, til vores server (localhost). 
-                xhr.send();
-            
+            // "Åbner" vores http request og angiver at det er POST request fra serveren på localhost:3000
+            xhr.open("post", "http://localhost:2500/ifExisting");
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.send(JSON.stringify({username}));
+
+            xhr.addEventListener("readystatechange", function() {
+                if(this.readyState === 4) {
+                    const res = this.response 
+                    if (res.message === "Failed"){
+                        printError("usernameErr", "username taken");
             }
-     
     
     // email valideres
     if (email =="") {
@@ -217,3 +205,4 @@ function validateForm(event) {
 
 }
  }}
+            )}}}

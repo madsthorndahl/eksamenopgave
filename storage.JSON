@@ -10,11 +10,20 @@
   },
   {
     "username": "MadsStor",
-    "phone": "24807712",
+    "phone": "23456789",
     "city": "Frederiksberg",
-    "zip": "2500",
+    "zip": "4848",
+    "address": "Beringsvej",
+    "email": "cfriesthorndahl@gmail.com",
+    "password": "hfhfhfh"
+  },
+  {
+    "username": "Mads",
+    "phone": "12345678",
+    "city": "Frederiksberg",
+    "zip": "1312",
     "address": "Beringsvej ",
-    "email": "annahhoeck@gmail.com",
-    "password": "1234"
+    "email": "madsfries@gmail.com",
+    "password": "123"
   }
 ]

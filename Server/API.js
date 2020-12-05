@@ -33,6 +33,28 @@ app.post('/', (req, res)=> {
     res.send(JSON.stringify({besked: 'Her oprettes en bruger, her er hans oplysninger:', storage}));
 })
 
+var dataPath = __dirname
+app.put('/editProfile/:username', (req, res) => {
+    data = fs.readFileSync("storage.JSON", "utf8") 
+        let parsedData = JSON.parse(data)
+        const username = req.params["username"];
+        let needupdate = parsedData.findIndex(element => {
+            return element.username == username})
+    
+        // this will use the current user, and only update those fields 
+        // which are sent in the request body. If only one field is sent, 
+        // only that field will be updated.
+  
+        const updatedUser = {...parsedData[needupdate], ...req.body}         
+       
+        // sætter så parsedData til den opdaterede user
+        parsedData[needupdate] = updatedUser 
+    
+
+        fs.writeFileSync("storage.JSON", JSON.stringify(parsedData, null, 2))
+        res.status(200).json({msg: "succes"})
+})
+
 app.post('/ifExisting', (req, res)=> {
     let validationData = req.body;
     var createdUser = JSON.parse(fs.readFileSync("storage.JSON"))
@@ -42,10 +64,10 @@ app.post('/ifExisting', (req, res)=> {
     for (let i = 0; i < createdUser.length; i++) {
         console.log(req.body)
         if (validationData.username === createdUser[i].username) {
-            return res.status(500).json({err:"Failed"});
+            return res.status(500).json({message:"Failed"});
         }}
 
-        res.end('bruger oprettes')
+        res.json({message:"bruger oprettes"})
         //her kommer alt bruger-oprettelses-logik
 })
 
