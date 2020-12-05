@@ -70,6 +70,12 @@ body {
     background-color: #CC4C4C;
 }
 
+.deleteBox {
+    padding-top: 30px;
+    margin-left: auto; 
+    margin-right: auto;
+    text-align: center;
+}
 
 body {
 
@@ -130,11 +136,11 @@ nav{
     justify-content: space-around;
     align-items: center;
     min-height: 8vh;
-    background-color: #5d4954;
+    background-color: #22382f;
 }
 
 .logo {
-    color: rgb(226, 226, 226);
+    color: rgb(255, 255, 255);
     text-transform: uppercase;
     letter-spacing: 5px;
     font-size: 20px;

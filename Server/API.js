@@ -33,17 +33,20 @@ app.post('/', (req, res)=> {
     res.send(JSON.stringify({besked: 'Her oprettes en bruger, her er hans oplysninger:', storage}));
 })
 
-app.post('/', (req, res)=> {
+app.post('/ifExisting', (req, res)=> {
     let validationData = req.body;
     var createdUser = JSON.parse(fs.readFileSync("storage.JSON"))
 
-    console.log(validationData)
     
+    //check for om username er brugt i forvejen
     for (let i = 0; i < createdUser.length; i++) {
-        if (validationData === createdUser[i].username) {
-
-            return res.json({err:"Failed"});
+        console.log(req.body)
+        if (validationData.username === createdUser[i].username) {
+            return res.status(500).json({err:"Failed"});
         }}
+
+        res.end('bruger oprettes')
+        //her kommer alt bruger-oprettelses-logik
 })
 
 
@@ -65,11 +68,7 @@ app.post('/signIn', (req, res)=> {
             return res.json(createdUser[i]);
 
             //CurrentUser skal vise brugeroplysningerne på den bruger, som logger ind
-            //localStorage.setItem('currentUser', JSON.stringify(createdUser[i]));
-            //location.href = "userProfile.html";
-            
             // hvis brugeroplysningerne er korrekte returneres at brugeren er inde
-            // return true;
         }
 
     }
@@ -90,45 +89,6 @@ app.post('/interMatch', (req, res)=> {
     console.log(likesArray, "hej")
     fs.writeFileSync("likes.JSON", JSON.stringify(likesArray, null, 2));
     res.send(JSON.stringify({besked: 'Vi sender vores egen bruger + liked bruger til JSON', likesArray}));
-    /*
-    var likeAlreadyMade = false; 
-    for (i = 0; i < likesArray; i++){
-        for (j = 0; j < interMatchData; j++){
-            if (likesArray[i].username === interMatchData[j].username && likesArray[i].likedUser === interMatchData[j].likedUser){
-                //res.send("Failed")
-                likeAlreadyMade = true;
-                console.log(likeAlreadyMade)
-                break
-            } 
-            if (likeAlreadyMade===false) {
-                likesArray.push(interMatchData)
-                fs.writeFileSync("likes.JSON", JSON.stringify(likesArray, null, 2));
-                console.log(interMatchData)
-            }
-        }
-    }
-    //fs.writeFileSync("likes.JSON", JSON.stringify(likesArray, null, 2));
-    res.send(JSON.stringify({besked: 'Vi sender vores egen bruger + liked bruger til JSON', likesArray}));
-*/
-
-    //console.log(createdUser)
-    /*
-    for (let i = 0; i < createdUser.length; i++) {
-        if (loginData.username === createdUser[i].username && loginData.password === createdUser[i].password) {
-
-            return res.json(createdUser[i]);
-
-            //CurrentUser skal vise brugeroplysningerne på den bruger, som logger ind
-            //localStorage.setItem('currentUser', JSON.stringify(createdUser[i]));
-            //location.href = "userProfile.html";
-            
-            // hvis brugeroplysningerne er korrekte returneres at brugeren er inde
-            // return true;
-        }
-
-    }
-    res.json({err:"Failed"});
-*/
 })
 
 app.post('/interMatchDis', (req, res)=> {
@@ -145,69 +105,25 @@ app.get('/findMatch', (req, res)=> {
 })
 
 
-app.delete('/deleteMatch/:username', (req, res)=> {
+app.delete('/deleteMatch', (req, res)=> {
     var allLikes = JSON.parse(fs.readFileSync("likes.JSON"))
-    var username = req.params.username;
-
-    //filter deletes all who return false, and this should return false:
-    allLikes = allLikes.filter((allLikes) => allLikes.username !== username)
-    res.json(allLikes)
-
-})
-
-app.delete('/deleteProfile', (req, res) => {
+    var CurrentUser = req.body[0];
+    var clickUser = req.body[1];
     
-    var allUsers = JSON.parse(fs.readFileSync("storage.JSON"))
-    res.json(allUsers)
+    let newLikes = allLikes.filter(user=> user.likedUser !== clickUser && user.username !== CurrentUser);
+    fs.writeFileSync("likes.JSON", JSON.stringify(newLikes, null, 2));
+    res.send(JSON.stringify({besked: 'Vi sender det nye likes array tilbage', newLikes}));
+    })
+
+app.delete('/deleteUser', (req, res)=> {
+    
+    let userArray = JSON.parse(fs.readFileSync("storage.JSON"))
+    let newUsers = userArray.filter(user=> user.username !== req.body.username);
+    fs.writeFileSync("storage.JSON", JSON.stringify(newUsers, null, 2));
+    res.send(JSON.stringify({besked: 'Vi sender det nye userarray tilbage', newUsers}));
 
 })
 
-app.post('/deleteProfile', (req, res)=> {
-    let reqData = req.body;
-    console.log('Post request virker')
-    console.log(reqData) 
-    var storage = JSON.parse(fs.readFileSync("storage.JSON"))
-    storage.push(reqData);
-    fs.writeFileSync("storage.JSON", JSON.stringify(storage, null, 2));
 
-    //console.log(reqData);
-    res.send(JSON.stringify({besked: 'Her er brugeren blevet slettet fra', storage}));
-})
-
-
-
-  /*
-    var userLike = allLikes.find(allLikes => allLikes.username === username);
-        if (userLike) {
-           res.json(userLike);
-        }
-        })
-        */
-/*
-    for (let i = 0; i < allLikes.length; i++) {
-        if (allLikes.username === username) {
-            res.json(allLikes[i]);
-        }
-    }
-     for(var i = 0; i > allLikes.length; i++){
-        if(allLikes.username === username)
-        res.json(allLikes[i])
-    }
-
-        */
-
-
-// Delete request virker ikke. Vi skal muligvis bruge et put request, da vi skal tage dataen fra JSON, loope igennem det, og slette noget bestemt data, for at sende dette tilbage til JSON. 
-// En anden mulighed kunne være at lave et delete request som sletter det hele, og efterfølgende et post request der displayer matches, nu uden den person som brugeren har fjernet. 
-// prøv evt at arbejde med det her i en ny github branch (developer branch evt), for at vise at du har styr på github branches. 
-// d
-/*
-app.delete('/deleteMatch', (req, res) => {
-    var deleteMatch = JSON.parse(fs.readFileSync("likes.JSON"))
-    res.json(deleteMatch)
-})
-*/
-
-
-app.listen(port, console.log(port));
+app.listen(port, console.log("Server running on port: " + port));
 

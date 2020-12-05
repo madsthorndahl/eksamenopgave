@@ -29,6 +29,7 @@ function printError(elemID, hintMsg) {
 
 //validate form funktionen defineres
 function validateForm(event) {
+
     //event.preventDefault 
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
@@ -64,11 +65,8 @@ function validateForm(event) {
         
         if(regex.test(username) == true){
         
-            function signIn(){
                 const xhr = new XMLHttpRequest();
-                xhr.responseType = "json"
-                    var loginData = username
-                    
+                xhr.responseType = "json"    
             
                 xhr.addEventListener("readystatechange", function() {
                     if(this.readyState === 4) {
@@ -77,13 +75,13 @@ function validateForm(event) {
                         if (respo.err == 'Failed'){
                             printError("usernameErr", "Please enter a username using the standard alphabet");
                         }
-                        console.log(respo); //Til at se, om request kommer tilbage
+                        
                     }
             
                     })
                 // "Åbner" vores http request og angiver at det er POST request fra serveren på localhost:3000
                 console.log('her')
-                xhr.open("post", "http://localhost:2500/signIn", true);
+                xhr.open("post", "http://localhost:2500/ifExisting", true);
             
                 // definerer at det er en JSON-fil der skal arbejdes med
                 xhr.setRequestHeader("Content-Type", "application/json");
@@ -93,7 +91,7 @@ function validateForm(event) {
             
             }
      
-    }
+    
     // email valideres
     if (email =="") {
         printError("emailErr", "please enter an email")

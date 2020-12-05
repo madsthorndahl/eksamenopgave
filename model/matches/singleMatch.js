@@ -174,12 +174,5 @@ function addDislikes() {
 
 // code review: Ifølge objektorienteret programmering, kunne denne funktion have sin egen fil
 
-function findMatch(matchId) {
-    for (var i = 0; i < matches.length; i++) {
-        if (matches[i]._matchId == matchId) {
-            return matches[i];
-        }
-    }
-}
 
 '</div>'

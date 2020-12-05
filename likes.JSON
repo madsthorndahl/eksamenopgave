@@ -6,5 +6,25 @@
   {
     "username": "Jens",
     "likedUser": "Mathias"
+  },
+  {
+    "username": "Jens",
+    "likedUser": "brugernavn"
+  },
+  {
+    "username": "brugernavn",
+    "likedUser": "Jens"
+  },
+  {
+    "username": "brugernavn",
+    "likedUser": "Mathias"
+  },
+  {
+    "username": "MadsStor",
+    "likedUser": "Mathias"
+  },
+  {
+    "username": "Mads",
+    "likedUser": "Mathias"
   }
 ]

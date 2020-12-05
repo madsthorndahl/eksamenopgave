@@ -1,20 +1,26 @@
 // Vi laver et post request der ligner likesarrayet meget! 
 // Inde i API skal vi så loope igennem likesarrayet, og finde matches. 
 // dvs. if (likesarray[i].username == likesarray[j].likedPerson && likesarray[j].username == likesarray[i].likedPerson)
+
+
 document.addEventListener("DOMContentLoaded", function() {
     const xhr = new XMLHttpRequest();
     xhr.responseType = "json"
+    xhr.addEventListener("readystatechange", matchFunction);
+    xhr.open("GET", "http://localhost:2500/findMatch", true);
+  // definerer at det er en JSON-fil der skal arbejdes med
+    xhr.setRequestHeader("Content-Type", "application/json");
+  // Sender http requested afsted. Den sender altså den data som er indtastet af brugeren, til vores server (localhost). 
+    xhr.send();
+})
  
-    //henter matchescontainer fra HTMLfilen 
-    var matchesContainer1 = document.getElementById('findMatches');
-    //console.log(matchesContainer)
- 
-    xhr.addEventListener("readystatechange", function() {
-       if(this.readyState === 4) {
-          var findingMatches = this.response;
-          console.log(findingMatches)
 
-          let currentUser = JSON.parse(localStorage.getItem("currentUser"))
+    function matchFunction () {
+        if(this.readyState === 4) {
+            var findingMatches = this.response;
+            console.log(findingMatches)
+          
+            let currentUser = JSON.parse(localStorage.getItem("currentUser"))
             console.log(currentUser)
         
             // for-loopet som tager arrayet og looper gennem matches
@@ -42,119 +48,45 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                         
                             <div class="match-quantity match-column">
-                                <button onclick="deleteMatch()" class="btn btn-danger" type="button">REMOVE</button>
-                            </div>
-                            <script> function deleteMatch(){console.log("removemymatchb)}</script>` // inline javascript funktion virker ikke
-                            
+                            <button class="btn btn-danger" id="${findingMatches[i].likedUser}" type="button">REMOVE</button>
+                            </div>`
                     
-                        matchRow.innerHTML = matchRowContents; //html koden indeholdt i matchRowContents variablen indøres i elementet matchRow
-                        matchItems.append(matchRow)
-                        alert ("You have a match") 
-                        //matchRow tilføjes til sektionen matchItems på html siden
+                      matchRow.innerHTML = matchRowContents; //html koden indeholdt i matchRowContents variablen indøres i elementet matchRow
+                        matchItems.append(matchRow) //matchRow tilføjes til sektionen matchItems på html siden
                         //De næste to linjer Sørger for at henholdsvis removeMatch funktion kaldes når der trykkes på knappen
-                        //matchRow.getElementsByClassName('btn-danger')[0].addEventListener('click', removeMatch);
-
-                        // Vi kan muligvis lave onclick funktionen herinde? altså når der trykkes remove, så skal den fjerne det fra JSON filen. 
-                        
-
-                    } 
+                        matchRow.getElementsByClassName('btn-danger')[0].addEventListener('click', removeMatchHTML);
+                    }
                 } 
             }
-             
-            /*
-            function deleteMatch (){ // Fungerer ikke pt. men burde det ikke virke?
-                console.log("remove my match")
-        
-            }
-            */
-        }
-    })
-
-    
-
-    xhr.open("GET", "http://localhost:2500/findMatch", true);
-        
-    // definerer at det er en JSON-fil der skal arbejdes med
-    xhr.setRequestHeader("Content-Type", "application/json");
-        
-    // Sender http requested afsted. Den sender altså den data som er indtastet af brugeren, til vores server (localhost). 
-    xhr.send();
-})
-
-/*
-function removeMatch(event){
-    var buttonClicked = event.target; //ved button.clicked refereres der til den aktuelle element, som skal fjernes
-    //Få fat i den aktuelle række, hvor ”remove” knappen er blevet aktiveret
-    var pickedMatchRow = buttonClicked.parentElement.parentElement;
-    //De næste to linjer udtrækker match navnet (titleElement.innerText) fra den aktuelle række
-    var titleElement = pickedMatchRow.getElementsByClassName('match-items')[0];
-    var title = titleElement.innerText;
-    buttonClicked.parentElement.parentElement.remove(); // fjerner den aktuelle html række, for det match, som brugeren ønskede fjernet.
-
-
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = "json"
- 
-    xhr.addEventListener("readystatechange", function() {
-       if(this.readyState === 4) {
-          var findingMatches = this.response;
-          console.log(findingMatches)
-          findingMatches.splice([0],1); 
-          console.log(findingMatches)
-
-       }
-    })
-    xhr.open("GET", "http://localhost:2500/findMatch", true);
-        
-    // definerer at det er en JSON-fil der skal arbejdes med
-    xhr.setRequestHeader("Content-Type", "application/json");
-        
-    // Sender http requested afsted. Den sender altså den data som er indtastet af brugeren, til vores server (localhost). 
-    xhr.send();
-
-    //Udover at fjerne matches på html siden skal vi også fjerne matches fra match listen,
-    //som er gemt som ”likes” på localStorage. Vi finder det object, som svarer til matchnavnet
-    //og fjerner det fra localstorage ved at udskifte arrayed i localStorage med et nyt array, hvor matched er fjernet 
-    var i;
-    for (i = 0; i < findingMatches.length; i++) {
-        if (findingMatches[i].likedUser === title){
-            findingMatches.splice(i,1); 
-            console.log(findingMatches)
-            //der slettes et element ved position index i myMatches arrayet,
-            //så det pågældende element også slettes fra localStorage: inspireret fra (Stack Overflow Spice, 2016) og  (W3schools splice, 2019)
+            alert ("It's a match!!!!!!!")  
           
-            localStorage.setItem("likes", JSON.stringify(myMatches));
-            break 
         }
-        
-
     }
 
+//Funktion som sletter match ved tryk på remove knappen 
+
+
+//funktion for at fjerne et match fra både HTML siden og arrayet i local storage 
+function removeMatchHTML(event) {
+    var buttonClicked = event.target; //ved button.clicked refereres der til den aktuelle element, som skal fjernes
+    buttonClicked.parentElement.parentElement.remove(); // fjerner den aktuelle html række, for det match, som brugeren ønskede fjernet.
+
+sendUpdate(buttonClicked.id); // dette id er den person der klikkes på username 
+
 }
 
-*/
-
-
-
-    /*
-    console.log("hej")
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = "json"
- 
-    xhr.addEventListener("readystatechange", function() {
-       if(this.readyState === 4) {
-          var findingMatches = this.response;
-          console.log(findingMatches)
-
-       }
-    })
-    xhr.open("GET", "http://localhost:2500/findMatch", true);
-        
-    // definerer at det er en JSON-fil der skal arbejdes med
-    xhr.setRequestHeader("Content-Type", "application/json");
-        
-    // Sender http requested afsted. Den sender altså den data som er indtastet af brugeren, til vores server (localhost). 
-    xhr.send();
+function sendUpdate(username){ //herved inddrages username for den som klikkes på, hvilket sendes over i API'et
+let currentUser = localStorage.getItem("currentUser");
+let curentUserUsername = currentUser.username
+let clickUser = username  
+let userArray = [curentUserUsername, clickUser]
+axios.delete("http://localhost:2500/deleteMatch", {
+        data: userArray
+})
+.then(response=>{
+        console.log(response.data)
+})           
 }
+ // alert("Your match has been removed");
+ // window.location.href = ("../view/myMatches.html")
 
-*/

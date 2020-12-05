@@ -7,12 +7,15 @@
     padding: 100px 5%;
 }
 
-
+h3 {
+    text-align: center;
+    padding-top: 10px;
+}
 .match_img {
     width: 25%;
     height: 35%;
     float: left;
-    display: inline-block;
+    
 }
 
 .matchName {
@@ -26,37 +29,35 @@
 
 .addALikeBtn {
     float: left;
-    display: inline-block;
     margin-left: 10%;
     margin-top: 100px;
     color: white;
-    background-color: #EB5757;
+    background-color: #074d1c;
     border: none;
-    border-radius: .3em;
+    border-radius: .9em;
     font-weight: bold;
     text-align: center;
     vertical-align: middle;
     padding: .67em .67em;
     cursor: pointer;
-    width: 11%;
+    width: 40%;
     height: 20%;
 }
 
 .disLikeBtn {
     float: left;
-    display: inline-block;
     margin-left: 10%;
     margin-top: 100px;
     color: white;
     background-color: #EB5757;
     border: none;
-    border-radius: .3em;
+    border-radius: .9em;
     font-weight: bold;
     text-align: center;
     vertical-align: middle;
     padding: .67em .67em;
     cursor: pointer;
-    width: 11%;
+    width: 40%;
     height: 20%;
 }
 
@@ -98,11 +99,11 @@ nav{
     justify-content: space-around;
     align-items: center;
     min-height: 8vh;
-    background-color: #5d4954;
+    background-color: #22382f;
 }
 
 .logo {
-    color: rgb(226, 226, 226);
+    color: rgb(255, 255, 255);
     text-transform: uppercase;
     letter-spacing: 5px;
     font-size: 20px;
