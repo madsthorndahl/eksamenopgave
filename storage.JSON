@@ -1,14 +1,5 @@
 [
   {
-    "username": "Mads",
-    "phone": "24807712",
-    "city": "Frederiksberg",
-    "zip": "2500",
-    "address": "Beringsvej ",
-    "email": "annahhoeck@gmail.com",
-    "password": "1234"
-  },
-  {
     "username": "MadsStor",
     "phone": "23456789",
     "city": "Frederiksberg",
@@ -25,5 +16,14 @@
     "address": "Beringsvej ",
     "email": "madsfries@gmail.com",
     "password": "123"
+  },
+  {
+    "username": "AnnaH",
+    "phone": "12345678",
+    "city": "Frederiksberg",
+    "zip": "1312",
+    "address": "Beringsvej ",
+    "email": "annahhoeck@gmail.com",
+    "password": "qwerty"
   }
 ]

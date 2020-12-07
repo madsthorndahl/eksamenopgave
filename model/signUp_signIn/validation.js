@@ -1,8 +1,4 @@
-
-//var signUpButton = document.getElementById("SignedUp").addEventListener("click",validateForm);
-
-
-// benytter klassen fra user.js
+// Constructs a class to structure the user data
 class User {
     constructor(username, password, phone, city, zip, address, email, gender){
         this.username = username;
@@ -13,24 +9,18 @@ class User {
         this.address = address;
         this.email = email;
         this.gender = gender;
-        // this.id = id; Lav en funktion der genererer id til en bruger. 
     }
 }
 
-//brugerne hentes så der kan tilføjes brugere, hvorunder userlist automatisk vil tage informationen 
-
-
-// herefter valideres samtlige felter ved oprettelse af en ny bruger 
-
-//fejl og errors defineres
+// Errors are deffined for all the elements
 function printError(elemID, hintMsg) {
     document.getElementById(elemID).innerHTML = hintMsg;
 }
 
-//validate form funktionen defineres
+// Creates the validation function 
 function validateForm(event) {
 
-    //event.preventDefault 
+// Retrives the input values from HTML
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
     var phone = document.getElementById("phone").value;
@@ -40,7 +30,7 @@ function validateForm(event) {
     var email = document.getElementById("email").value;
 
 
-//herefter tillægger jeg alle ovenstående variable en error med en standard værdi 
+// Gives all of the input a default error status
     var usernameErr = true;
     var passwordErr = true;
     var phoneErr = true;
@@ -49,26 +39,26 @@ function validateForm(event) {
     var addressErr = true;
     var emailErr = true;
 
-// validere userName
+// Validates username
 if (username ==""){
     printError("usernameErr", "Type in a username");
 }
-//klargøre hvilke tegn username må indeholde --> disse tegn er fundet på stack Overflow
-//https://stackoverflow.com/questions/9628879/javascript-regex-username-validation
+// Makes shure a username can only consist of stadart chrachters 
+//regex from: https://stackoverflow.com/questions/9628879/javascript-regex-username-validation
 else {
-    var regex = /^[a-zA-Z\s]+$/;
+    var regex = /^[a-zA-Z0-9]+$/;
 
-//hvilke situationer der skal printes en errormessage defineres
+// Deffins when the username validation is to send an error message and the message
     if (regex.test(username) === false){
-        printError("usernameErr", "Please enter a username using the standard alphabet");
+        printError("usernameErr", "Username can only consist of standart characters");
     }
-    
+// If it passes the first paramater it runs the next
     if(regex.test(username) == true){
     
             const xhr = new XMLHttpRequest();
             xhr.responseType = "json"    
         
-            // "Åbner" vores http request og angiver at det er POST request fra serveren på localhost:3000
+// Sends the data to the API, the logic is in the API for unique username validation
             xhr.open("post", "http://localhost:2500/ifExisting");
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.send(JSON.stringify({username}));
@@ -80,11 +70,11 @@ else {
                         printError("usernameErr", "username taken");
             }
     
-    // email valideres
+// Email is validated
     if (email =="") {
         printError("emailErr", "please enter an email")
     }
-//definere hvilke tegn email må indeholde
+// Deffines that a email must consist of these charachters. regex from stackoverflow.com
     else{
         var regexMail = /^\S+@\S+\.\S+$/;
         if (regexMail.test(email) === false) {
@@ -95,25 +85,25 @@ else {
         }
     }
 
-//Validering af telefon nummer
+// Validate phonenumber
     if (phone ==""){
         print("phoneErr", "please enter your phone number");
     } else {
-        //regex fra stackoverflow
+//regex from stackoverflow.com
         var regexPhone = /^[0-9]{8}$/;
         if (regexPhone.test(phone)===false){
-            printError("phoneErr", "please enter a validt phone number - hint it has to be 8 digits")
+            printError("phoneErr", "please enter a 8 digit phone number")
         } else {
             printError("phoneErr", "");
             phoneErr = false;
         }
     }
 
-//validering af by  
+// Validate city
     if (city ==""){
         print("cityErr", "please enter a city");
     } else {
-        //samme regex fra username - fra stackoverflow
+// Only standart characters, same code as the username character validation from stackoverflow.com
         var regexCity = /^[a-zA-Z\s]+$/;
         if(regexCity.test(city) === false) {
             printError("cityErr", "Cityname can only contain letters from A-Z");
@@ -123,15 +113,14 @@ else {
         }
     }
 
-//validating af postnummer, da datingappen er i DK, sættes antal cifte til 4 
-
+// Validate zip-code
     if (zip==""){
         print("zipErr", "please enter a valid ZIP-code");
     } else {
-        //der benyttes samme regex som til telefonnummer dog ændres antal digits til 4 fremfor 8 
+// For danish users this need to be 4 digits, same regex code as the phone number just with 4 instead of 8. 
         var regexZip = /^[0-9]{4}$/;
         if (regexZip.test(zip) === false) {
-        printError("zipErr","Please enter a valid ZIP-Code, it should be exactly 4-digits") ;
+        printError("zipErr","Zip code must be exactly four digits") ;
         }
         else {
             printError("zipErr", "");
@@ -139,27 +128,27 @@ else {
         }
     }
 
-//validering af adresse - regex fra stackoverflow
-//https://stackoverflow.com/questions/3763820/javascript-regular-expression-to-validate-an-address
+// Validation of addres
+//regex from: https://stackoverflow.com/questions/3763820/javascript-regular-expression-to-validate-an-address
     if (address==""){
         print("adressErr", "please enter an address"); 
     } else {
         var regexAddress = /^[a-zA-Z0-9\s,.'-]{3,}$/;
         if (regexAddress.test(address) === false) {
-            printError("addressErr", "You have to type in a valid address");
+            printError("addressErr", "Type in valid addres");
         } else {
             printError("addressErr", "");
             addressErr = false;
         }
     }
 
-//validering af password 
+// Validation of password
     if (password==""){
         printError("passwordErr", "Please type a password");
     }else {
         //password regex fra stackoverflow
         var regexPassword = /^[a-zA-Z0-9\s,.'-]{3,}$/;
-        if (regexAddress.test(password)===false){
+        if (regexPassword.test(password)===false){
             printError("passwordErr", "please enter a secure password");
         }else {
             printError("passwordErr", "");
@@ -167,42 +156,9 @@ else {
         }
     }
 
-//herefter sørges der for at, hvis nogle af oplysningerne er forkerte, skal storeDetails funktionen ikke køre.
-    if ((usernameErr || phoneErr || cityErr || zipErr || addressErr || emailErr || passwordErr) == true){
+// Makes shure that the function wont create the user if any of the validation fails
+    if ((usernameErr && phoneErr && cityErr && zipErr && addressErr && emailErr && passwordErr) == true){
         return false;
-    } else {
-    // laver en ny string, som viser hvad der er blevet indtastet 
-        var detailsPreview = "You have entered the following details: \n" +
-        "Username: " + username + "\n" + 
-        "Email: " + email + "\n" + 
-        "Phone numer: " + phone + "\n" + 
-        "City: " + city + "\n" + 
-        "ZIP-code: " + zip+ "\n" + 
-        "Address: " + address + "\n" + 
-        "username: " + username + "\n" + 
-        "Password" ; 
-    
-
-//Herefter oprettes en variable for oprettede bruger, som sendes til localstorage
-    var createdUser = JSON.parse(localStorage.getItem("User"));
-    console.log(createdUser);
-
-    //pusher ny bruger ind i et array 
-    createdUser.push(new User (username, password, phone, city, zip, address, email));
-    console.log(createdUser);
-
-    //createduser laves til en string 
-    var newUserAdd = JSON.stringify(createdUser);
-    //tilføjes til local storage
-    localStorage.setItem("User", newUserAdd);
-    //tilføjer en alert 
-    alert(detailsPreview);
-    alert('New User has been created');
-    console.log(newUserAdd);
-
-    // window.location: returns the href (URL) of the current page
-    window.location = ("signIn.html");
-
-}
+    }
  }}
-            )}}}
+ )}}}

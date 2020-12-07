@@ -1,4 +1,4 @@
-
+// Retrives the data from HTML and run it as an asycronised function so that the HTML elements are fully loaded
 async function updateFunction() {
     var username = document.getElementById("editUsername").value;
     var password = document.getElementById("newPassword").value;
@@ -8,6 +8,7 @@ async function updateFunction() {
     var address = document.getElementById("newAddress").value;
     var email = document.getElementById("newEmail").value;
     
+// Makes shure the user cant change the username since it is the unique identifyer in our program
       let updateData = {
           username : username,
           email: email,
@@ -18,11 +19,9 @@ async function updateFunction() {
           password : password, 
       }
     
-    
+// Sends a PUT reqest to the server using axios
       axios.put("http://localhost:2500/editProfile/" + username, updateData)
                   .then(function(response){
                   console.log(response);
               } 
-                    //.then(() => window.location = "../view/userProfile.html"));}
-    
                     )}

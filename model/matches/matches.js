@@ -2,57 +2,43 @@ document.addEventListener("DOMContentLoaded", function() {
    const xhr = new XMLHttpRequest();
    xhr.responseType = "json"
 
-   //henter matchescontainer fra HTMLfilen 
+   // Retrives the data from the HTML file
    var matchesContainer = document.getElementById('matchesContainer');
-   //console.log(matchesContainer)
-
+   // Retrives data from the JSON file
    xhr.addEventListener("readystatechange", function() {
       if(this.readyState === 4) {
          var allMatches = this.response;
          console.log(allMatches)
        
-            // for-loopet som tager arrayet og looper gennem matches
+            // Displays all the posible matches
             for(var i=0; i< allMatches.length; i++){
-
-            // variabel en div genenem variablen match, herved simplificeres HTML 
             var match = document.createElement('div');
-         
-            // Her bliver de forskellige properties fra klassen udvalgt og kan displayes på siden 
             match.className = "match";
-            
-            // displayer navne på oprettede brugere i matches.html 
+            // On click opens a new HTML element to display the profile
             match.innerHTML += '<div class="matchName" id='+allMatches[i].username+' onClick="interMatch('+allMatches[i].username+')">'+allMatches[i].username+'</div>';
-            // displayer navnet på det eventuelle match 
-         
-            // tager Child af matchescontaine
             matchesContainer.appendChild(match);
             }
-            
-         }
+          }
 
       })
 
       
          
+// Sends the GET request to the API
+xhr.open("GET", "http://localhost:2500/matches", true);
+   
+xhr.setRequestHeader("Content-Type", "application/json");
 
-      xhr.open("GET", "http://localhost:2500/matches", true);
-         
-      // definerer at det er en JSON-fil der skal arbejdes med
-      xhr.setRequestHeader("Content-Type", "application/json");
-         
-      // Sender http requested afsted. Den sender altså den data som er indtastet af brugeren, til vores server (localhost). 
-      xhr.send();
-               
-   
-   
-   
+xhr.send();
+                
 })
 
-
+// Runs an asycronised fuction in order for the HTML elements to be fully loaded before the code runs
 async function interMatch(username){
    const xhr = new XMLHttpRequest();
    xhr.responseType = "json"
 
+// Indentify witch user that is displayd and set them as an local storage item for later use
    xhr.addEventListener("readystatechange", function() {
       if(this.readyState === 4) {
          var allMatches = this.response;
@@ -66,18 +52,11 @@ async function interMatch(username){
       }
 
    })
-
-      
-         
-
-      xhr.open("GET", "http://localhost:2500/matches", true);
-         
-      // definerer at det er en JSON-fil der skal arbejdes med
-      xhr.setRequestHeader("Content-Type", "application/json");
-         
-      // Sender http requested afsted. Den sender altså den data som er indtastet af brugeren, til vores server (localhost). 
-      xhr.send();
-               
-
+// Sends the GET request to the API
+xhr.open("GET", "http://localhost:2500/matches", true);
    
+xhr.setRequestHeader("Content-Type", "application/json");
+   
+xhr.send();
+
 }

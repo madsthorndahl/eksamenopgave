@@ -1,14 +1,13 @@
-// dette er et udkast, fra en server der fungerer
+// Deffines the rquriements for the server to run
 const express = require('express');
 const app = express();
-//const bodyParser = require('body-parser');
-const cors = require('cors'); // Hvad bruges cors til? 
+const cors = require('cors'); 
 const bodyParser = require('body-parser');
 const port = 2500;
 var fs = require('fs');
 
 app.use(cors());
-app.use(bodyParser.json()); //finder kun json data
+app.use(bodyParser.json()); 
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -19,7 +18,7 @@ app.use((req, res, next) => {
 
 
 
-// Ved at sætte noget ind i input feltet på html siden, og trykke submit, gemmes dataen i en JSON fil. 
+// Save the user input as a new user in storage.JSON 
 app.post('/', (req, res)=> {
     let reqData = req.body;
 
@@ -29,10 +28,10 @@ app.post('/', (req, res)=> {
     storage.push(reqData);
     fs.writeFileSync("storage.JSON", JSON.stringify(storage, null, 2));
 
-    //console.log(reqData);
-    res.send(JSON.stringify({besked: 'Her oprettes en bruger, her er hans oplysninger:', storage}));
+    res.send(JSON.stringify({besked: 'User data:', storage}));
 })
 
+// Update user end point
 var dataPath = __dirname
 app.put('/editProfile/:username', (req, res) => {
     data = fs.readFileSync("storage.JSON", "utf8") 
@@ -40,44 +39,29 @@ app.put('/editProfile/:username', (req, res) => {
         const username = req.params["username"];
         let needupdate = parsedData.findIndex(element => {
             return element.username == username})
-    
-        // this will use the current user, and only update those fields 
-        // which are sent in the request body. If only one field is sent, 
-        // only that field will be updated.
-  
+            
         const updatedUser = {...parsedData[needupdate], ...req.body}         
        
-        // sætter så parsedData til den opdaterede user
+// Insert the username as the former and for the updated user
         parsedData[needupdate] = updatedUser 
-    
-
         fs.writeFileSync("storage.JSON", JSON.stringify(parsedData, null, 2))
         res.status(200).json({msg: "succes"})
 })
 
+// Gets data to the validation and validates the username so that it's unique
 app.post('/ifExisting', (req, res)=> {
     let validationData = req.body;
     var createdUser = JSON.parse(fs.readFileSync("storage.JSON"))
-
-    
     //check for om username er brugt i forvejen
     for (let i = 0; i < createdUser.length; i++) {
         console.log(req.body)
         if (validationData.username === createdUser[i].username) {
             return res.status(500).json({message:"Failed"});
         }}
-
-        res.json({message:"bruger oprettes"})
-        //her kommer alt bruger-oprettelses-logik
+        res.json({message:"User created"})
 })
 
-
-app.get('/signIn', (req, res)=> {
-    let data = 'Get request signin virker'
-    let dataAsString = JSON.stringify(data);
-    res.send(dataAsString);
-})
-
+// Get data for the sign in ang varify the username and password
 app.post('/signIn', (req, res)=> {
     let loginData = req.body;
     var createdUser = JSON.parse(fs.readFileSync("storage.JSON"))
@@ -88,45 +72,42 @@ app.post('/signIn', (req, res)=> {
         if (loginData.username === createdUser[i].username && loginData.password === createdUser[i].password) {
 
             return res.json(createdUser[i]);
-
-            //CurrentUser skal vise brugeroplysningerne på den bruger, som logger ind
-            // hvis brugeroplysningerne er korrekte returneres at brugeren er inde
         }
 
     }
     res.json({err:"Failed"});
 })
 
-
+// Sends data to the matching
 app.get('/matches', (req, res)=> {
     var allMatches = JSON.parse(fs.readFileSync("storage.JSON"))
     res.json(allMatches)
 })
-
-// like knap: tag data fra localstorage (founduser), og send dette til en likes.json fil. 
+// Recives the data from like and creates a new like in likes.JSON
 app.post('/interMatch', (req, res)=> {
     let interMatchData = req.body;
     let likesArray = JSON.parse(fs.readFileSync("likes.JSON"))
     likesArray.push(interMatchData) 
-    console.log(likesArray, "hej")
     fs.writeFileSync("likes.JSON", JSON.stringify(likesArray, null, 2));
-    res.send(JSON.stringify({besked: 'Vi sender vores egen bruger + liked bruger til JSON', likesArray}));
+    res.send(JSON.stringify({besked: 'Sending the new like', likesArray}));
 })
 
+// Recives the data from dislike and creates a new like in disLike.JSON
 app.post('/interMatchDis', (req, res)=> {
     let interMatchDataDis = req.body;
     let disLikesArray = JSON.parse(fs.readFileSync("disLike.JSON"))
     disLikesArray.push(interMatchDataDis)
     fs.writeFileSync("disLike.JSON", JSON.stringify(disLikesArray, null, 2));
-    res.send(JSON.stringify({besked: 'Vi sender vores egen bruger + disliked bruger til JSON', disLikesArray}));
+    res.send(JSON.stringify({besked: 'Sending the new dislike', disLikesArray}));
 })
 
+// Sends data to the matching 
 app.get('/findMatch', (req, res)=> {
     var allLikes = JSON.parse(fs.readFileSync("likes.JSON"))
     res.json(allLikes)
 })
 
-
+// Recieves data about witch like to delete and deletes the like 
 app.delete('/deleteMatch', (req, res)=> {
     var allLikes = JSON.parse(fs.readFileSync("likes.JSON"))
     var CurrentUser = req.body[0];
@@ -134,18 +115,18 @@ app.delete('/deleteMatch', (req, res)=> {
     
     let newLikes = allLikes.filter(user=> user.likedUser !== clickUser && user.username !== CurrentUser);
     fs.writeFileSync("likes.JSON", JSON.stringify(newLikes, null, 2));
-    res.send(JSON.stringify({besked: 'Vi sender det nye likes array tilbage', newLikes}));
+    res.send(JSON.stringify({besked: 'Sending new likes', newLikes}));
     })
 
+// Recieves data about witch user to delete and deletes the user 
 app.delete('/deleteUser', (req, res)=> {
     
     let userArray = JSON.parse(fs.readFileSync("storage.JSON"))
     let newUsers = userArray.filter(user=> user.username !== req.body.username);
     fs.writeFileSync("storage.JSON", JSON.stringify(newUsers, null, 2));
-    res.send(JSON.stringify({besked: 'Vi sender det nye userarray tilbage', newUsers}));
+    res.send(JSON.stringify({besked: 'Sending new users', newUsers}));
 
 })
-
-
+// Deffins what port the server is runnig on and sends a message in the console that its running
 app.listen(port, console.log("Server running on port: " + port));
 
